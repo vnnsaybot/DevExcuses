@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DevExcuses — Система выживания</title>
+    <link rel="stylesheet" href="/static/styles/main.css">
+</head>
+<body>
+
+    <header class="navbar">
+        <div class="container">
+            <a href="/" class="logo">DevExcuses</a>
+            <nav class="nav-links">
+                <a href="/add" class="btn-secondary">Предложить отмазку</a>
+                <div class="auth-block">
+                    <a href="/login">Войти</a>
+                    <a href="/register" class="btn-primary">Создать аккаунт</a>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+        <!-- Профессия -->
+        <section class="selection-zone">
+            <form action="/generate" method="POST" class="gen-form">
+                <select name="profession">
+                    <option value="frontend">Frontend</option>
+                    <option value="backend">Backend</option>
+                    <option value="devops">DevOps</option>
+                    <option value="manager">Project Manager</option>
+                </select>
+                <button type="submit" class="btn-generate">Получить отмазку</button>
+            </form>
+        </section>
+
+        <!-- Отмазка -->
+        <article class="excuse-card">
+            <div class="card-header">
+                <span class="badge">Frontend</span>
+                <span class="author">Добавил: <strong>@senior_dev</strong></span>
+            </div>
+
+            <div class="card-body">
+                <p class="excuse-main-text">
+                    "Это не баг, это результат неопределенного поведения сторонней библиотеки при рендеринге в нестандартном разрешении."
+                </p>
+            </div>
+
+            <div class="card-footer">
+                <div class="rating">
+                    <button class="vote-btn up">▲</button>
+                    <span class="score">128</span>
+                    <button class="vote-btn down">▼</button>
+                </div>
+                <div class="stats">
+                    <span>💬 14 комментариев</span>
+                </div>
+            </div>
+        </article>
+
+        <!-- Комментарии -->
+        <section class="comments-area">
+            <h3>Комментарии к этой отмазке</h3>
+
+            <form action="/comment/add" method="POST" class="add-comment-form">
+                <textarea name="text" placeholder="У вас эта отмазка сработала?"></textarea>
+                <button type="submit" class="btn-secondary">Отправить</button>
+            </form>
+
+            <div class="comments-list">
+                <!-- Шаблон -->
+                <div class="comment">
+                    <div class="comment-meta">
+                        <strong>@junior_tester</strong> <span class="date">2 часа назад</span>
+                    </div>
+                    <p class="comment-text">Менеджер поверил, но попросил ссылку на документацию библиотеки. Что делать??</p>
+                </div>
+
+                <div class="comment">
+                    <div class="comment-meta">
+                        <strong>@cto_god</strong> <span class="date">5 часов назад</span>
+                    </div>
+                    <p class="comment-text">Классика. Использую это с 2012 года.</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <p>&copy; 2024 DevExcuses Engine</p>
+    </footer>
+
+</body>
+</html>
