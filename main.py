@@ -1,7 +1,7 @@
 from flask import render_template, Flask
 from sqlalchemy import func
 from data import db_session
-from data.__all_models import Excuse
+from data.__all_models import Excuse, Comment
 from data import excuse_resources
 from flask_restful import Api
 
@@ -13,10 +13,11 @@ api = Api(app)
 def main():
     session = db_session.create_session()
     random_excuse = session.query(Excuse).order_by(func.random()).first()
-    return render_template("main.html", excuse=random_excuse)
+    comments = session.query(Comment).filter_by(excuse=random_excuse.id).all()
+    return render_template("main.html", excuse=random_excuse, comments=comments )
 
 if __name__ == '__main__':
     db_session.global_init("db/blogs.db")
     api.add_resource(excuse_resources.ExcusesListResource, "/api/excuses/")
-    api.add_resource(excuse_resources.ExcusesResource, "/api/excuses/<excuses_id>")
+    api.add_resource(excuse_resources.ExcuseResource, "/api/excuses/<excuses_id>")
     app.run(host='127.0.0.1', port=8080, debug=True)
