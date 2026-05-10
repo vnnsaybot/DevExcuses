@@ -12,11 +12,8 @@ api = Api(app)
 @app.route("/", methods=['GET', 'POST'])
 def main():
     session = db_session.create_session()
-
     random_excuse = session.query(Excuse).order_by(func.random()).first()
-
     return render_template("main.html", excuse=random_excuse)
-
 
 if __name__ == '__main__':
     db_session.global_init("db/blogs.db")

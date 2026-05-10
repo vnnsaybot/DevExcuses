@@ -6,8 +6,6 @@ json_data = {
     "author": "RoBert",
     "content": "Papa Rimski tak Skazal",
     "rating": 100,      
-    "likes": 1000,
-    "dislikes": 900,
     "is_prime": True
 }
 responce = requests.post("http://127.0.0.1:8080/api/excuses", json=json_data)
