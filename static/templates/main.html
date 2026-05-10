@@ -24,7 +24,7 @@
     <main class="container">
         <!-- Профессия -->
         <section class="selection-zone">
-            <form action="/generate" method="POST" class="gen-form">
+            <form action="/" method="POST" class="gen-form">
                 <select name="profession">
                     <option value="frontend">Frontend</option>
                     <option value="backend">Backend</option>
@@ -36,30 +36,37 @@
         </section>
 
         <!-- Отмазка -->
-        <article class="excuse-card">
-            <div class="card-header">
-                <span class="badge">Frontend</span>
-                <span class="author">Добавил: <strong>@senior_dev</strong></span>
-            </div>
+         <article class="excuse-card">
+    {% if excuse %}
+        <div class="card-header">
+            <span class="badge">{{ "Prime" if excuse.is_prime else "Classic" }}</span>
+            <span class="author">Добавил: <strong>@{{ excuse.author }}</strong></span>
+        </div>
 
-            <div class="card-body">
-                <p class="excuse-main-text">
-                    "Это не баг, это результат неопределенного поведения сторонней библиотеки при рендеринге в нестандартном разрешении."
-                </p>
-            </div>
+        <div class="card-body">
+            <p class="excuse-main-text">
+                "{{ excuse.content }}"
+            </p>
+        </div>
 
-            <div class="card-footer">
-                <div class="rating">
-                    <button class="vote-btn up">▲</button>
-                    <span class="score">128</span>
-                    <button class="vote-btn down">▼</button>
-                </div>
-                <div class="stats">
-                    <span>💬 14 комментариев</span>
-                </div>
+        <div class="card-footer">
+            <div class="rating">
+                <button class="vote-btn up">▲</button>
+                <span class="score">{{ excuse.rating }}</span>
+                <button class="vote-btn down">▼</button>
             </div>
-        </article>
-
+            <div class="stats">
+                <span>👍 {{ excuse.likes }}</span>
+                <span>👎 {{ excuse.dislikes }}</span>
+            </div>
+        </div>
+    {% else %}
+        <div class="card-body">
+            <p class="excuse-main-text">В базе пока нет отмазок. Будь первым, кто добавит!</p>
+        </div>
+    {% endif %}
+</article>
+        
         <!-- Комментарии -->
         <section class="comments-area">
             <h3>Комментарии к этой отмазке</h3>

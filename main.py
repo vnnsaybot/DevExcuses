@@ -1,15 +1,25 @@
-from flask import Flask, render_template
-from data import db_session, excuse_resources
-
+from flask import render_template, Flask
+from sqlalchemy import func
+from data import db_session
+from data.__all_models import Excuse
+from data import excuse_resources
+from flask_restful import Api
 
 app = Flask(__name__, template_folder='static/templates')
 app.config['SECRET_KEY'] = 'hardhardhard'
+api = Api(app)
 
-@app.route("/")
+@app.route("/", methods=['GET', 'POST'])
 def main():
-    return render_template("main.html")
+    session = db_session.create_session()
+
+    random_excuse = session.query(Excuse).order_by(func.random()).first()
+
+    return render_template("main.html", excuse=random_excuse)
 
 
 if __name__ == '__main__':
     db_session.global_init("db/blogs.db")
+    api.add_resource(excuse_resources.ExcusesListResource, "/api/excuses/")
+    api.add_resource(excuse_resources.ExcusesResource, "/api/excuses/<excuses_id>")
     app.run(host='127.0.0.1', port=8080, debug=True)

@@ -66,4 +66,4 @@ class ExcusesListResource(Resource):
         session = db_session.create_session()
         session.add(excuses)
         session.commit()
-        return jsonify({'id': 1})
+        return jsonify({'id': excuses.id})
