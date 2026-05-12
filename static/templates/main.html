@@ -50,10 +50,17 @@
         </div>
 
         <div class="card-footer">
+            <!-- Рейтинг -->
             <div class="rating">
-                <button class="vote-btn up">▲</button>
+                <form action="/vote/{{ excuse.id }}/up" method="POST" style="display:inline;">
+                    <button type="submit" class="vote-btn up">▲</button>
+                </form>
+
                 <span class="score">{{ excuse.rating }}</span>
-                <button class="vote-btn down">▼</button>
+
+                <form action="/vote/{{ excuse.id }}/down" method="POST" style="display:inline;">
+                    <button type="submit" class="vote-btn down">▼</button>
+                </form>
             </div>
         </div>
     {% else %}
