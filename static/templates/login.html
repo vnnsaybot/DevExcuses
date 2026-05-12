@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Вход — DevExcuses</title>
+    <link rel="stylesheet" href="/static/styles/main.css">
+</head>
+<body>
+    <header class="navbar">
+        <div class="container">
+            <a href="/" class="logo">DevExcuses</a>
+        </div>
+    </header>
+
+    <main class="container">
+        <div class="auth-form-container">
+            <h2>С возвращением!</h2>
+            <form action="/login" method="POST">
+                <div class="form-group">
+                    <label>Email или никнейм</label>
+                    <input type="text" name="email" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label>Пароль</label>
+                    <input type="password" name="password" class="form-control" required>
+                </div>
+                <button type="submit" class="btn-generate btn-full">Войти в систему</button>
+            </form>
+            <div class="auth-footer">
+                Новенький? <a href="/register">Создать аккаунт</a>
+            </div>
+        </div>
+    </main>
+</body>
+</html>

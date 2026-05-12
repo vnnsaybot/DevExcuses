@@ -226,3 +226,64 @@ select {
     color: var(--text-muted);
     font-size: 0.8rem;
 }
+
+
+.auth-form-container {
+    max-width: 400px;
+    margin: 60px auto;
+    background: var(--card-dark);
+    border: 1px solid var(--border-color);
+    padding: 30px;
+    border-radius: 10px;
+}
+
+.auth-form-container h2 {
+    margin-top: 0;
+    margin-bottom: 20px;
+    text-align: center;
+    font-size: 1.5rem;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 0.9rem;
+    color: var(--text-muted);
+}
+
+.form-control {
+    width: 100%;
+    background: var(--bg-dark);
+    border: 1px solid var(--border-color);
+    color: white;
+    padding: 10px;
+    border-radius: 6px;
+    box-sizing: border-box; /* Чтобы padding не раздувал ширину */
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: var(--accent);
+}
+
+.auth-footer {
+    margin-top: 20px;
+    text-align: center;
+    font-size: 0.9rem;
+    color: var(--text-muted);
+}
+
+.auth-footer a {
+    color: var(--accent);
+    text-decoration: none;
+}
+
+.btn-full {
+    width: 100%;
+    padding: 12px;
+    font-size: 1rem;
+}
