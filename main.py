@@ -1,9 +1,9 @@
-from flask import render_template, Flask, redirect, url_for, request 
+from flask import render_template, Flask, redirect, url_for, request, session
 from sqlalchemy import func
 from data import db_session
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
-from data.__all_models import Excuse, Comment, User
 from data import excuse_resources, user_resources, comments_resources
+from data.__all_models import Excuse, Comment, User
 from flask_restful import Api
 
 app = Flask(__name__, template_folder='static/templates')
@@ -31,18 +31,54 @@ def show_excuse(excuse_id):
     comments = session.query(Comment).filter_by(excuse=excuse.id).all()
     return render_template("main.html", excuse=excuse, comments=comments)
 
+
 # лайк
 @app.route("/vote/<int:excuse_id>/<string:action>", methods=['POST'])
 def vote(excuse_id, action):
-    session = db_session.create_session()
-    excuse = session.get(Excuse, excuse_id)
-    if excuse:
-        if action == "up":
-            excuse.rating += 1
-        elif action == "down":
-            excuse.rating -= 1
-        session.commit()
+    if 'voted_excuses' not in session:
+        session['voted_excuses'] = {}
+    
+    voted_excuses = dict(session['voted_excuses'])
+    excuse_key = str(excuse_id)
+    previous_action = voted_excuses.get(excuse_key)
+    
+    db_sess = db_session.create_session()
+    
+    try:
+        excuse = db_sess.get(Excuse, excuse_id)
+        if excuse:
+            if previous_action == action:
+                if action == "up":
+                    excuse.rating -= 1
+                elif action == "down":
+                    excuse.rating += 1
+                db_sess.commit()
+                
+                voted_excuses.pop(excuse_key, None)
+                session['voted_excuses'] = voted_excuses
+                return redirect(url_for('show_excuse', excuse_id=excuse_id))
+            
+            if previous_action:
+                if previous_action == "up":
+                    excuse.rating -= 1
+                elif previous_action == "down":
+                    excuse.rating += 1
+            
+            if action == "up":
+                excuse.rating += 1
+            elif action == "down":
+                excuse.rating -= 1
+                
+            db_sess.commit()
+            voted_excuses[excuse_key] = action
+            session['voted_excuses'] = voted_excuses
+
+    finally:
+        db_sess.close()
+
     return redirect(url_for('show_excuse', excuse_id=excuse_id))
+
+
 
 # коммент
 @app.route("/comment/add/<int:excuse_id>/<string:author>", methods=['POST'])
