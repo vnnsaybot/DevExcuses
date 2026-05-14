@@ -19,7 +19,9 @@ def main():
     session = db_session.create_session()
     random_excuse = session.query(Excuse).order_by(func.random()).first()
     comments = session.query(Comment).filter_by(excuse=random_excuse.id).all()
+    session.close()
     return render_template("main.html", excuse=random_excuse, comments=comments )
+
 
 # Конкретная отмазка
 @app.route("/excuse/<int:excuse_id>")
@@ -29,6 +31,7 @@ def show_excuse(excuse_id):
     if not excuse:
         return redirect(url_for('main'))
     comments = session.query(Comment).filter_by(excuse=excuse.id).all()
+    session.close()
     return render_template("main.html", excuse=excuse, comments=comments)
 
 
@@ -164,6 +167,31 @@ def logout():
     logout_user()
     return redirect("/")
 
+# добавление отмазки
+@app.route("/add", methods=['GET', 'POST'])
+@login_required
+def add():
+    if request.method == 'GET':
+        return render_template("adder.html")
+    
+    db_sess = db_session.create_session()
+    
+    content = request.form.get('content')
+    
+    excuse = Excuse(
+        author=current_user.username,
+        content=content,
+        rating=0,
+        is_prime=0
+    )
+    
+    db_sess.add(excuse)
+    db_sess.commit()
+    generated_id = excuse.id
+    db_sess.close()
+    
+    return redirect(url_for('show_excuse', excuse_id=generated_id))
+
 if __name__ == '__main__':
     db_session.global_init("db/blogs.db")
     api.add_resource(excuse_resources.ExcusesListResource, "/api/excuses/")
@@ -171,4 +199,4 @@ if __name__ == '__main__':
     api.add_resource(user_resources.UserResource, '/api/users')
     api.add_resource(comments_resources.CommentsListResource, '/api/comments/<comment_id>')
 
-    app.run(host='127.0.0.1', port=8080, debug=True)
+    app.run(host='127.0.0.1', port=8081, debug=True)

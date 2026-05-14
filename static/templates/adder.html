@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Предложить отмазку — DevExcuses</title>
+    <link rel="stylesheet" href="/static/styles/main.css">
+    <style>
+        .form-group textarea.form-control {
+            min-height: 120px;
+            font-family: inherit;
+        }
+    </style>
+</head>
+<body>
+
+    <header class="navbar">
+        <div class="container">
+            <a href="/" class="logo">DevExcuses</a>
+            <nav class="nav-links">
+                <div class="add-excuse-block">
+                    <a href="/" class="btn-secondary">На главную</a>
+                </div>
+                
+                <div class="auth-block">
+                    {% if current_user.is_authenticated %}
+                        <p>Привет, {{ current_user.username }}!</p>
+                        <a href="/logout">Выйти</a>
+                    {% else %}
+                        <a href="/login">Войти</a>
+                        <a href="/register" class="btn-primary">Создать аккаунт</a>
+                    {% endif %}
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+        <div class="auth-form-container">
+            <h2>Предложить новую отмазку</h2>
+            <form action="/add" method="POST">
+                
+                <div class="form-group">
+                    <label for="profession">Категория (профессия)</label>
+                    <select name="profession" id="profession" class="form-control" style="width: 100%; height: 40px;">
+                        <option value="frontend">Frontend</option>
+                        <option value="backend">Backend</option>
+                        <option value="devops">DevOps</option>
+                        <option value="manager">Project Manager</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="content">Текст отмазки</label>
+                    <textarea 
+                        name="content" 
+                        id="content" 
+                        class="form-control" 
+                        placeholder="Например: У меня локально всё работает..." 
+                        required
+                    ></textarea>
+                </div>
+
+                <div class="form-group">
+                    <button type="submit" class="btn-generate btn-full">Опубликовать</button>
+                </div>
+                
+                <p class="auth-footer">
+                    Ваша отмазка появится в общем списке после публикации.
+                </p>
+            </form>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <p>&copy; 2026 DevExcuses Engine</p>
+    </footer>
+
+</body>
+</html>
