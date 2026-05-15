@@ -71,6 +71,11 @@ def vote(excuse_id, action):
                 excuse.rating += 1
             elif action == "down":
                 excuse.rating -= 1
+            
+            if excuse.rating >= 30:
+                excuse.is_prime = True
+            else:
+                excuse.is_prime = False
                 
             db_sess.commit()
             voted_excuses[excuse_key] = action

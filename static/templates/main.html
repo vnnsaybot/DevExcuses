@@ -51,7 +51,11 @@
          <article class="excuse-card">
     {% if excuse %}
         <div class="card-header">
-            <span class="badge">{{ "Prime" if excuse.is_prime else "Classic" }}</span>
+            {% if excuse.is_prime %}
+            <span class="badge" style="border-color: #f1c40f; color: #f1c40f;">★ PRIME</span>
+            {% else %}
+                <span class="badge">Classic</span>
+            {% endif %}
             <span class="author">Добавил: <strong>@{{ excuse.author }}</strong></span>
         </div>
 
