@@ -16,11 +16,22 @@ login_manager.init_app(app)
 # Главная
 @app.route("/", methods=['GET', 'POST'])
 def main():
-    session = db_session.create_session()
-    random_excuse = session.query(Excuse).order_by(func.random()).first()
-    comments = session.query(Comment).filter_by(excuse=random_excuse.id).all()
-    session.close()
-    return render_template("main.html", excuse=random_excuse, comments=comments )
+    db_sess = db_session.create_session()
+    
+    selected_prof = request.form.get('profession')
+    query = db_sess.query(Excuse)
+
+    if selected_prof:
+        query = query.filter(Excuse.profession == selected_prof)
+    
+    random_excuse = query.order_by(func.random()).first()
+    if random_excuse:
+        comments = db_sess.query(Comment).filter_by(excuse=random_excuse.id).all()
+    else:
+        comments = []
+    
+    db_sess.close()
+    return render_template("main.html", excuse=random_excuse, comments=comments)
 
 
 # Конкретная отмазка
@@ -182,12 +193,14 @@ def add():
     db_sess = db_session.create_session()
     
     content = request.form.get('content')
-    
+    selected_prof = request.form.get('profession')
+
     excuse = Excuse(
         author=current_user.username,
         content=content,
         rating=0,
-        is_prime=0
+        is_prime=0,
+        profession=selected_prof
     )
     
     db_sess.add(excuse)

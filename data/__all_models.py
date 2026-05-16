@@ -14,6 +14,7 @@ class Excuse(SqlAlchemyBase, SerializerMixin):
     content = sqlalchemy.Column(sqlalchemy.String, nullable=False)
     rating = sqlalchemy.Column(sqlalchemy.Integer, nullable=True)
     is_prime = sqlalchemy.Column(sqlalchemy.Boolean,nullable=False, default=False)
+    profession = sqlalchemy.Column(sqlalchemy.String, nullable=True)
 
 class Comment(SqlAlchemyBase, SerializerMixin):
     __tablename__ = 'comments'

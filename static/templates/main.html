@@ -13,16 +13,12 @@
             <a href="/" class="logo">DevExcuses</a>
             <nav class="nav-links">
                 <div class="add-excuse-block">
-                    {% if current_user.is_authenticated %}
-                        <a href="/add" class="btn-secondary">Предложить отмазку</a>
-                    {% else %}
-                        <a href="/login" class="btn-secondary">Предложить отмазку</a>
-                    {% endif %}
+                    <a href="/add" class="btn-secondary">Предложить отмазку</a>
                 </div>
                 
                 <div class="auth-block">
                     {% if current_user.is_authenticated %}
-                        <p>Привет, {{ current_user.username }}!</p>
+                        <span>Привет, <strong>{{ current_user.username }}</strong>!</span>
                         <a href="/logout">Выйти</a>
                     {% else %}
                         <a href="/login">Войти</a>
@@ -48,83 +44,74 @@
         </section>
 
         <!-- Отмазка -->
-         <article class="excuse-card">
-    {% if excuse %}
-        <div class="card-header">
-            {% if excuse.is_prime %}
-            <span class="badge" style="border-color: #f1c40f; color: #f1c40f;">★ PRIME</span>
-            {% else %}
-                <span class="badge">Classic</span>
-            {% endif %}
-            <span class="author">Добавил: <strong>@{{ excuse.author }}</strong></span>
-        </div>
-
-        <div class="card-body">
-            <p class="excuse-main-text">
-                "{{ excuse.content }}"
-            </p>
-        </div>
-
-        <div class="card-footer">
-            <!-- Рейтинг -->
-             {% if current_user.is_authenticated %}
-            <div class="rating">
-                <form action="/vote/{{ excuse.id }}/up" method="POST" style="display:inline;">
-                    <button type="submit" class="vote-btn up">▲</button>
-                </form>
-
-                <span class="score">{{ excuse.rating }}</span>
-
-                <form action="/vote/{{ excuse.id }}/down" method="POST" style="display:inline;">
-                        <button type="submit" class="vote-btn down">▼</button>
-                </form>
+        <article class="excuse-card">
+        {% if excuse %}
+            <div class="card-header">
+                {% if excuse.is_prime %}
+                    <span class="badge" style="border-color: #f1c40f; color: #f1c40f;">★ PRIME</span>
+                {% else %}
+                    <span class="badge">Classic</span>
+                {% endif %}
+                <span class="author">Добавил: <strong>@{{ excuse.author }}</strong></span>
+                {% if excuse.profession %}
+                    <span class="prof-tag">[{{ excuse.profession }}]</span>
+                {% endif %}
             </div>
-        </div>
-            {% else %}
+
+            <div class="card-body">
+                <p class="excuse-main-text">"{{ excuse.content }}"</p>
+            </div>
+
+            <div class="card-footer">
                 <div class="rating">
-                    <a href="/login"><button type="submit" class="vote-btn up">▲</button></a> 
-
-                    <span class="score">{{ excuse.rating }}</span>
-                    
-                    <a href="/login"><button type="submit" class="vote-btn up">▼</button></a> 
+                    {% if current_user.is_authenticated %}
+                        <form action="/vote/{{ excuse.id }}/up" method="POST" style="display:inline;">
+                            <button type="submit" class="vote-btn up">▲</button>
+                        </form>
+                        <span class="score">{{ excuse.rating }}</span>
+                        <form action="/vote/{{ excuse.id }}/down" method="POST" style="display:inline;">
+                            <button type="submit" class="vote-btn down">▼</button>
+                        </form>
+                    {% else %}
+                        <a href="/login" class="vote-btn up">▲</a> 
+                        <span class="score">{{ excuse.rating }}</span>
+                        <a href="/login" class="vote-btn down">▼</a> 
+                    {% endif %}
                 </div>
-            {% endif %}
-        </div>
-
-        
-    {% else %}
-        <div class="card-body">
-            <p class="excuse-main-text">В базе пока нет отмазок. Будь первым, кто добавит!</p>
-        </div>
-    {% endif %}
-</article>
-        <!-- Комментарии -->
-        <section class="comments-area">
-            <h3>Комментарии к этой отмазке</h3>
-            {% if current_user.is_authenticated %}
-                <form action="/comment/add/{{ excuse.id }}/{{ current_user.username }}" method="POST" class="add-comment-form">
-                    <textarea name="text" placeholder="У вас эта отмазка сработала?" required></textarea>
-                    <button type="submit" class="btn-secondary">Отправить</button>   
-                </form>
-            {% else %}
-                <a href="/login" class="btn-secondary">
-                    Отправить
-                </a>
-            {% endif %}
-            
-
-            <div class="comments-list">
-                <!-- Шаблон -->
-                {% for comment in comments %}
-                    <div class="comment">
-                        <div class="comment-meta">
-                            <strong>@{{ comment.author }}</strong>
-                        </div>
-                        <p class="comment-text">{{ comment.content }}</p>
-                    </div>
-                {% endfor %}
             </div>
-        </section>
+
+            <section class="comments-area">
+                <h3>Комментарии</h3>
+                {% if current_user.is_authenticated %}
+                    <form action="/comment/add/{{ excuse.id }}/{{ current_user.username }}" method="POST" class="add-comment-form">
+                        <textarea name="text" placeholder="У вас эта отмазка сработала?" required></textarea>
+                        <button type="submit" class="btn-secondary">Отправить</button>   
+                    </form>
+                {% else %}
+                    <p><a href="/login">Войдите</a>, чтобы оставить комментарий.</p>
+                {% endif %}
+
+                <div class="comments-list">
+                    {% for comment in comments %}
+                        <div class="comment">
+                            <div class="comment-meta">
+                                <strong>@{{ comment.author }}</strong>
+                            </div>
+                            <p class="comment-text">{{ comment.content }}</p>
+                        </div>
+                    {% else %}
+                        <p class="no-comments">Пока комментариев нет. Будьте первым!</p>
+                    {% endfor %}
+                </div>
+            </section>
+
+        {% else %}
+            <div class="card-body">
+                <p class="excuse-main-text">В этой категории пока нет отмазок. Будь первым, кто добавит!</p>
+                <a href="/add" class="btn-primary">Добавить отмазку</a>
+            </div>
+        {% endif %}
+        </article>
     </main>
 
     <footer class="footer">
