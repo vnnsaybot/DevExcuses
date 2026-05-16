@@ -53,8 +53,11 @@ def main():
         query = query.join(Profession).filter(Profession.name == selected_prof_name)
     
     random_excuse = query.order_by(func.random()).first()
-    if random_excuse.is_prime == False:
-       random_excuse = query.order_by(func.random()).first() 
+
+    if random_excuse and random_excuse.is_prime == False:
+        another_attempt = query.order_by(func.random()).first()
+        if another_attempt:
+            random_excuse = another_attempt
 
     comments = []
     if random_excuse:
