@@ -42,11 +42,10 @@
                 
                 <div class="form-group">
                     <label for="profession">Категория (профессия)</label>
-                    <select name="profession" id="profession" class="form-control" style="width: 100%; height: 40px;">
-                        <option value="frontend">Frontend</option>
-                        <option value="backend">Backend</option>
-                        <option value="devops">DevOps</option>
-                        <option value="manager">Project Manager</option>
+                    <select name="profession" required>
+                        {% for prof in professions %}
+                            <option value="{{ prof.name }}">{{ prof.title }}</option>
+                        {% endfor %}
                     </select>
                 </div>
 

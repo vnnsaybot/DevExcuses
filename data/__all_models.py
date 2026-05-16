@@ -1,9 +1,19 @@
 import sqlalchemy
+from sqlalchemy import orm
 from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
 from sqlalchemy_serializer import SerializerMixin
 from .db_session import SqlAlchemyBase
 
+
+class Profession(SqlAlchemyBase, SerializerMixin):
+    __tablename__ = 'professions'
+
+    id = sqlalchemy.Column(sqlalchemy.Integer, primary_key=True, autoincrement=True)
+    name = sqlalchemy.Column(sqlalchemy.String, unique=True, nullable=False)
+    title = sqlalchemy.Column(sqlalchemy.String, nullable=False)
+
+    excuses = orm.relationship("Excuse", back_populates='profession_relation')
 
 class Excuse(SqlAlchemyBase, SerializerMixin):
     __tablename__ = 'excuses'
@@ -14,7 +24,8 @@ class Excuse(SqlAlchemyBase, SerializerMixin):
     content = sqlalchemy.Column(sqlalchemy.String, nullable=False)
     rating = sqlalchemy.Column(sqlalchemy.Integer, nullable=True)
     is_prime = sqlalchemy.Column(sqlalchemy.Boolean,nullable=False, default=False)
-    profession = sqlalchemy.Column(sqlalchemy.String, nullable=True)
+    profession_id = sqlalchemy.Column(sqlalchemy.Integer, sqlalchemy.ForeignKey("professions.id"))
+    profession_relation = orm.relationship('Profession', back_populates='excuses')
 
 class Comment(SqlAlchemyBase, SerializerMixin):
     __tablename__ = 'comments'

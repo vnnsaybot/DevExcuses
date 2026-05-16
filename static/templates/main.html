@@ -34,10 +34,10 @@
         <section class="selection-zone">
             <form action="/" method="POST" class="gen-form">
                 <select name="profession">
-                    <option value="frontend">Frontend</option>
-                    <option value="backend">Backend</option>
-                    <option value="devops">DevOps</option>
-                    <option value="manager">Project Manager</option>
+                    <option value="">Все профессии</option>
+                    {% for prof in professions %}
+                        <option value="{{ prof.name }}">{{ prof.title }}</option>
+                    {% endfor %}
                 </select>
                 <button type="submit" class="btn-generate">Получить отмазку</button>
             </form>

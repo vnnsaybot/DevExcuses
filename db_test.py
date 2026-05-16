@@ -1,18 +1,23 @@
 import requests
-import sqlite3 
 
 
-# responce = requests.get("http://127.0.0.1:8080/api/")
-# print(responce.text)
-json_data = {
-    "author": "RoBert",
-    "content": "Papa Rimski tak Skazal",
-    "rating": 100,      
-    "is_prime": True
+response = requests.get("http://127.0.0.1:8081/api/excuses")
+print("Все отмазки:", response.json())
+
+print()
+
+response = requests.get("http://127.0.0.1:8081/api/excuses", params={"profession": "frontend"})
+print("Только Frontend:", response.json())
+
+print()
+
+resp = requests.get("http://127.0.0.1:8081/api/comments/", params={"excuse_id": 1})
+print(resp.json())
+
+new_comment = {
+    "author": "Tester",
+    "content": "API работает отлично!",
+    "excuse": 1
 }
-responce = requests.post("http://127.0.0.1:8080/api/excuses", json=json_data)
-print(responce.status_code)
-
-# responce = requests.delete("http://127.0.0.1:8080/api/v2/users/4")
-# print(responce.status_code)
-
+post_resp = requests.post("http://127.0.0.1:8081/api/comments/", json=new_comment)
+print(f"Создан комментарий с ID: {post_resp.json().get('id')}")
