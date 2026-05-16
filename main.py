@@ -6,6 +6,7 @@ from flask_login import LoginManager, login_user, logout_user, login_required, c
 from data import excuse_resources, comments_resources, profession_resources 
 from data.__all_models import Excuse, Comment, User, Profession
 from flask_restful import Api
+from waitress import serve
 
 app = Flask(__name__, template_folder='static/templates')
 app.config['SECRET_KEY'] = 'hardhardhard'
@@ -243,4 +244,5 @@ if __name__ == '__main__':
     api.add_resource(profession_resources.ProfessionListResource, '/api/professions/')
     api.add_resource(profession_resources.ProfessionResource, '/api/professions/<int:profession_id>')
 
-    app.run(host='127.0.0.1', port=8080, debug=True)
+    # app.run(host='127.0.0.1', port=8080, debug=True)
+    serve(app, host='127.0.0.1', port=8080)
