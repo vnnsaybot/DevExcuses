@@ -1,11 +1,8 @@
-from flask import jsonify
+from flask import jsonify, request
 from flask_restful import reqparse, abort, Resource
-from flask import request 
 
 from . import db_session
-from .__all_models import Excuse
-
-
+from .__all_models import Excuse, Profession 
 
 parser = reqparse.RequestParser()
 parser.add_argument('id', required=False, type=int)
@@ -13,12 +10,13 @@ parser.add_argument('author', required=False, type=str)
 parser.add_argument('content', required=False, type=str)
 parser.add_argument('rating', required=False, type=int)
 parser.add_argument('is_prime', required=False, type=bool)
-parser.add_argument('profession', required=True, type=str) 
+parser.add_argument('profession_id', required=True, type=int)
 
 
 def abort_if_excuse_not_found(excuse_id):
     session = db_session.create_session()
     excuse = session.get(Excuse, excuse_id)
+    session.close()
     if not excuse:
         abort(404, message=f"excuse {excuse_id} not found")
 
@@ -28,8 +26,13 @@ class ExcuseResource(Resource):
         abort_if_excuse_not_found(excuse_id)
         session = db_session.create_session()
         excuse = session.get(Excuse, excuse_id)
-        return jsonify({'excuse': excuse.to_dict(
-            only=('id', 'author', 'content', 'rating', 'is_prime', 'profession'))})
+        
+        data = excuse.to_dict(only=(
+            'id', 'author', 'content', 'rating', 'is_prime', 
+            'profession_relation.id', 'profession_relation.name'
+        ))
+        session.close()
+        return jsonify({'excuse': data})
 
     def delete(self, excuse_id):
         abort_if_excuse_not_found(excuse_id)
@@ -37,6 +40,7 @@ class ExcuseResource(Resource):
         excuse = session.get(Excuse, excuse_id)
         session.delete(excuse)
         session.commit()
+        session.close()
         return jsonify({'success': 'OK'})
 
 
@@ -46,25 +50,36 @@ class ExcusesListResource(Resource):
         prof = request.args.get('profession') 
         
         if prof:
-            excuses = session.query(Excuse).filter(Excuse.profession == prof).all()
+            excuses = session.query(Excuse).join(Excuse.profession_relation).filter(Profession.name == prof).all()
         else:
             excuses = session.query(Excuse).all()
             
-        return jsonify({'excuses': [item.to_dict(
-            only=('id', 'author', 'content', 'rating', 'is_prime', 'profession')) 
-            for item in excuses]})
+        result = [
+            item.to_dict(only=(
+                'id', 'author', 'content', 'rating', 'is_prime', 
+                'profession_relation.name'
+            )) 
+            for item in excuses
+        ]
+        
+        session.close()
+        return jsonify({'excuses': result})
 
     def post(self):
         args = parser.parse_args()
+        session = db_session.create_session()
+        
         excuse = Excuse(
             id=args.get('id'),
             author=args['author'],
             content=args['content'],
             rating=args['rating'],
             is_prime=args['is_prime'],
-            profession=args['profession']
+            profession_id=args['profession_id']
         )
-        session = db_session.create_session()
         session.add(excuse)
         session.commit()
-        return jsonify({'id': excuse.id})
+        
+        res_id = excuse.id
+        session.close()
+        return jsonify({'id': res_id})

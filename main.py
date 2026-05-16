@@ -240,7 +240,7 @@ if __name__ == '__main__':
     db_session.global_init("db/blogs.db")
     first_start()
     
-    api.add_resource(excuse_resources.ExcusesListResource, "/api/excuses/")
+    api.add_resource(excuse_resources.ExcusesListResource, "/api/excuses")
     api.add_resource(excuse_resources.ExcuseResource, "/api/excuses/<int:excuse_id>")
     api.add_resource(comments_resources.CommentsListResource, '/api/comments/')
     api.add_resource(comments_resources.CommentResource, '/api/comments/<int:comment_id>')
@@ -248,4 +248,4 @@ if __name__ == '__main__':
     api.add_resource(profession_resources.ProfessionResource, '/api/professions/<int:profession_id>')
 
     # app.run(host='127.0.0.1', port=8080, debug=True)
-    serve(app, host='127.0.0.1', port=8080)
+    serve(app, host='127.0.0.1', port=8081)
